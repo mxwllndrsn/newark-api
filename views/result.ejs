@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+    <body>
+    	<form action="/search" method="post">
+			<input name="part" type="text" placeholder="Search another part" required>
+			<input type="submit" value="Search">
+        </form><br />
+        <hr />
+        <em>searched terms: <%= partNumbers.join(", ") %></em><br />
+        <table cellpadding="10px" margin="10px">
+            <tr style="font-weight:bold">
+                <th>Part Image</th>
+                <th>Part Number</th>
+                <th>Manufacturer</th>
+                <th>Description</th>
+                <th>Datasheet</th>
+            </tr>
+            <% partList.forEach(function(partList){ %>
+                <%- include('show', {part: partList} ); %>
+            <% }); %>
+        </table>
+    </body>
+</html>

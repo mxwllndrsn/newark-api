@@ -1,0 +1,28 @@
+<<<<<<< HEAD
+<!doctype html>
+<html lang="en">
+    <body>
+        <a href="https://sso.digikey.com/as/authorization.oauth2?response_type=code&client_id=a8a3bb92-09cf-4b70-86b5-fcc8cedb8d94&redirect_uri=https://localhost:8080/oauth/redirect">
+            login with digikey
+        </a>
+
+        <!--firebase-->
+            <!-- The core Firebase JS SDK is always required and must be listed first -->
+            <script src="/__/firebase/6.6.0/firebase-app.js"></script>
+
+            <!-- TODO: Add SDKs for Firebase products that you want to use
+             https://firebase.google.com/docs/web/setup#reserved-urls -->
+
+            <!-- Initialize Firebase -->
+            <script src="/__/firebase/init.js"></script>
+    </body>
+=======
+<!doctype html>
+<html lang="en">
+    <body>
+        <a href="https://sso.digikey.com/as/authorization.oauth2?response_type=code&client_id=8696d448-db79-46b4-98d9-b3b89482d860&redirect_uri=https://localhost:8080/oauth/redirect">
+            login with digikey
+        </a>
+    </body>
+>>>>>>> 275956137d9f3523b3c8f34fe8f770aac901d931
+<html>
