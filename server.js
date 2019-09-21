@@ -1,42 +1,39 @@
 // server.js
 // newark version
+// no ssl requirements
 
 //standard requirements////////////////////
 const fs = require('fs');
 const path = require('path');
+const http = require('http');
 const bodyParser = require('body-parser')
 const express = require('express');
 const app = express();
 
 
 //custom requirements/////////////////////
-require('./partRequest.js')();
-require('./userAuth.js')();
+require('./newarkRequest.js')();
 
 
-//digikey auth credentials///////////////
-const authCred = {
-	dgkey_id: '8696d448-db79-46b4-98d9-b3b89482d860',
-	dgkey_secret: 'X1wQ2uU1bX5jL1nK6sC2eM0sB6eG8fX7wV2sK5jW7xX6xS7sJ1',
-	redirect: '/oauth/redirect',
-	auth_uri: 'https://localhost:8080/oauth/redirect',
-	grant: 'authorization_code'
-};
+//newark auth credentials///////////////
+var apiKey;
 
-
-//ssl///////////////////////////////////
-const options = {
-	key: fs.readFileSync('certs/client-key.pem'),
-	cert: fs.readFileSync('certs/client-cert.pem')
+if(fs.existsSync('./key.txt')){
+	fs.readFile('./key.txt', 'utf-8', (err, data) => {
+		if(err) throw new Error(err);
+		apiKey = data;
+		console.log('got key:', apiKey);
+	});
 };
 
 
 //assignments/////////////////////////
-var authTokens = {};
+
+const redirect = 'http://localhost:8080/redirect';
 var partData = {};
 var partNumbers = [];
 var partList = [];
- 
+
 
 //settings//////////////////////////////
 app.use(express.static(path.join(__dirname, 'public')));
@@ -46,21 +43,24 @@ app.use(bodyParser.urlencoded({ extended: true }))
 
 
 //server////////////////////////////////
-https.createServer(options, app).listen(8080);
+http.createServer(app).listen(8080);
 app.listen(8000, function () {
 	console.log('listening port: 8080')
 });
 
 
 //callbacks/////////////////////////////
-function tokenCall(tokens){
-	authTokens = tokens;
-	console.log('\n got tokens:', authTokens);
-	fs.writeFileSync('tokens.json', JSON.stringify(authTokens, null, 2));
-}
 function searchCall(data){
 	partData = data;
-	console.log('\nsearch got data');
+	console.log(
+		'\nsearch got data:',
+		'\n',partData['displayName'],
+		'\n',partData['brandName'],
+		'\n',partData['translatedManufacturerPartNumber'],
+		'\n',partData['image'],
+		'\n',partData['datasheets'][0]['url']
+	);
+
 	partList.push(partData);
 	console.log('partList grew');
 }
@@ -68,31 +68,14 @@ function searchCall(data){
 
 // index
 app.get('/', function(req, res){
-	// check if we already have tokens
-	if(fs.existsSync('./tokens.json')){
-		console.log('GET / tokens already exist');
-		fs.readFile('./tokens.json', (err, data) => {
-			if(err) throw err;
-			authTokens = JSON.parse(data);
-			console.log('authTokens:', authTokens);
-			res.render('search');
-		});
-	} else {
-		res.render('index');
-		console.log('GET / rendered index');
-		console.log('need tokens');
-	}
+	console.log('GET / render search');
+	res.render('search');
 });
 
 
-// initial redirect authorization 
-app.get(authCred.redirect, function(req, res){
-	const authCode = req.query.code;
-	console.log('redirect received, auth code:', authCode);
-	var postStr = `code=${authCode}&client_id=${authCred.dgkey_id}&client_secret=${authCred.dgkey_secret}&redirect_uri=${authCred.auth_uri}&grant_type=${authCred.grant}`;
-	getTokens(postStr, authCred, tokenCall);
-	console.log('render search');
-	res.render('search');
+// response redirect 
+app.get(redirect, function(req, res){
+	console.log('GET redirect');
 });
 
 
@@ -103,14 +86,14 @@ app.post('/search', function(req, res){
 	console.log('POST / search param:', partNumbers);
 
 	for(i=0; i<partNumbers.length; i++){
-		search(partNumbers[i], authCred.dgkey_id, authTokens, searchCall);
+		search(partNumbers[i], apiKey, searchCall);
 	}
 	//wait and render
 	console.log('loading results...');
-	console.log(partList);
+	/*console.log(partList);
 	setTimeout(function(){
 		res.redirect('result');
-	}, 10000);
+	}, 2000);*/
 });
 
 
