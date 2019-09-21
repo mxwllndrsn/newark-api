@@ -90,10 +90,10 @@ app.post('/search', function(req, res){
 	}
 	//wait and render
 	console.log('loading results...');
-	/*console.log(partList);
+	console.log(partList);
 	setTimeout(function(){
 		res.redirect('result');
-	}, 2000);*/
+	}, 2000);
 });
 
 
@@ -102,13 +102,11 @@ app.get('/result', function(req, res){
 	console.log('GET /result');
 	res.render('result', {
 		partNumbers: partNumbers,
-		partList: partList
-		/*
-		partNumber: partData['ManufacturerPartNumber'],
-		manufacturer: partData['ManufacturerName']['Text'],
-		description: partData['DetailedDescription'],
-		datasheetURL: partData['PrimaryDatasheet'],
-		*/
+		partList: partList,
+		partNumber: partData['translatedManufacturerPartNumber'],
+		manufacturer: partData['brandName'],
+		description: partData['displayName'],
+		datasheetURL: partData['datasheets'][0]['url'],
 	});
 	//console.log(partList);
 });
