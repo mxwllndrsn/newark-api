@@ -12,4 +12,7 @@ Should be developed as interface for general search request component ie:
   - Digi-Key Interface ---> Search Component
   - Newark Interface ---> Search Component
 
-Rendering to shared results view _in progress_. 
+Rendering to shared results view _in progress_.
+
+_Due to Newark API requirements you will require your own API key -- save as 'key.txt' in top directory. (You can obtain [a key here](https://partner.element14.com))_
+ 
